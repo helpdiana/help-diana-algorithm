@@ -1,6 +1,4 @@
-##clova-ocr + papago api
-##command line 명령어 : python clova-ocr+papago.py [사진 폴더 주소] [결과 저장 주소] 입력
-
+##clova-ocr + papago api => 여러 사진 처리후 text파일 출력
 
 import json
 import base64
@@ -11,12 +9,13 @@ import sys
 import urllib.request
 import argparse
 from nltk import sent_tokenize
+import csv
 
 
     
 def CLOVA_OCR(img) :
-    URL = ''
-    KEY = ''
+    URL = '' #naver cloud platform OCR api APIGW Invoke URL 
+    KEY = '' #naver cloud platform OCR api Secret Key
 
     headers = {
         'Content-Type': 'application/json;UTF-8',
@@ -43,6 +42,7 @@ def CLOVA_OCR(img) :
     return response
 
 
+
 parser = argparse.ArgumentParser()
 parser.add_argument('ocr_file_path', type=str, help = 'input ocr image filepath')
 parser.add_argument('store_file_path', type=str, help = 'input store image filepath')
@@ -55,6 +55,7 @@ img_list = os.listdir(ocr_filepath)
 img_list.remove('.DS_Store')
 #print(img_list)
 img_list = sorted(img_list)
+
 
 for img in img_list :
 
@@ -72,10 +73,10 @@ for img in img_list :
     for word in word_list:
         text += ' ' + word['inferText']
         
-        
+    
     tokenized_sentences = sent_tokenize(text)
-    
-    
+    ocr_imsi  = []
+    trans_imsi = []
     for sentence in tokenized_sentences:
         
         #papago api 유료ver
@@ -112,21 +113,32 @@ for img in img_list :
         rescode = response.getcode()
         response_body = response.read()
         trans_text = response_body.decode('utf-8') 
+
         """
+        
+        #한 문장씩 list형태로 저장
+        ocr_imsi.append([sentence])
+        trans_imsi.append([translatedText])
+        
+        #전송 형태 json
+        ocr_dic = {
+            "trans_before": ocr_imsi
+        }
+        trans_dic = {
+            "trans_after": trans_imsi
+        }
 
+        #각 진단서의 마지막 문장이 입력되면 저장.
+        #각각의 진단서 아웃풋 형태 : [ [문장1],[문장2],[문장3],...,[문장N]]
+        if sentence is tokenized_sentences[-1] :
+            #ocr 추출 결과 json으로 저장
+            with open(f"{store_filepath}/ocr_{filename}.json", "w", encoding='utf-8') as of:
+                json.dump(ocr_dic, of,ensure_ascii=False, indent="\t")
+                
+            #papago 번역 결과 json으로 저장
+            with open(f"{store_filepath}/trans_{filename}.json", "w", encoding='utf-8') as pf:
+                json.dump(trans_dic, pf,ensure_ascii=False, indent="\t")
 
-        #ocr 추출 결과
-        with open(f"{store_filepath}/ocr_{filename}.txt", "a", encoding='utf-8') as f:
-            f.write(sentence)
-            f.write('\n \n')
-            
-        #papago 번역 결과
-        with open(f"{store_filepath}/trans_{filename}.txt", "a", encoding='utf-8') as f:
-            f.write(translatedText)
-            f.write('\n \n')
-            
+    
+
     print("Done")
-
-    
-    
-    
