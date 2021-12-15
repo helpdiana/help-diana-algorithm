@@ -1,4 +1,4 @@
-# install
+### install
 
 python 3.8x (tested on 3.8.10) (python3 이상, 너무 오래된 version만 아니면 됨.)
 
@@ -8,9 +8,9 @@ python-dotenv == 0.19.1
 
 nltk == 3.6.5
 
-# key 발급
+### key 발급
 
-https://github.com/helpdiana/help-diana-algorithm/tree/main/API_test 에서 ocr version 3 (v3)와 trans version 5 (v5) download
+https://github.com/helpdiana/help-diana-algorithm/tree/main/API_test 에서 ocr version 3 (v3)와 trans version 5 (v5) 
 
 https://www.ncloud.com/ 에서 Papago text translation 에서 Application key 발급한 후,
 
@@ -28,4 +28,6 @@ Secret Key, APIGW Invoke URL 값 복사해서
 
 ![image](https://user-images.githubusercontent.com/80442377/146261883-2aed38e8-0c6f-43e9-a0db-6c083deb1db1.png)
 
-# 단어 사전 활용 git : https://github.com/helpdiana/help-diana-algorithm-be
+### 단어 사전 활용 git 
+
+https://github.com/helpdiana/help-diana-algorithm-be
